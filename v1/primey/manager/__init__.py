@@ -1,0 +1,1 @@
+from v1.manager.__main__ import Manager
