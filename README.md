@@ -41,3 +41,20 @@ Here "n" is the number that we are trying to determine is prime and the "output_
 
 Once the new job order has been received, the manager will perform all calculations by itself. Once complete the outcome will be saved to a file in the given ouput directory.
 
+# Version 2
+Version 1 works perfectly fine for small integers, however; once we get to larger numbers, the process manager takes too long doing all the work by itself.
+
+That is why in Version 2, we now introduce workers. Instead of attempting to do all the checking by itself, the manager now hands off the calculations to the workers. 
+
+### Step 1: Worker Initialization
+When a new worker is initialized, it will send a registration message to the manager at the given port. Once the manager recieves this message, the manager adds the worker to its list of workers and returns an registration acklowledgement.
+
+### Step 2: Task distribution
+When the manager recieves a new job, it will begin to assign tasks to any free workers through the TCP channel. If no worker is free, it will wait until one opens up. 
+Once a worker completes its given task, it will return a completion message to the manager.
+
+### Step 3: Output Results
+Once all tasks have been, completed the manager will save the output to the given given location.
+
+## Worker Heartbeat
+To ensure that that workers remain healthy and no work is lost, workers are required to send a UDP heartbeat message every 2 seconds. If the manager does not receive a heartbeat from the worker for more than 10 seconds, the worker will be registered as dead, and will not be sent any tasks.
